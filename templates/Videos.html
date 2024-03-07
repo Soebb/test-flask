@@ -1,0 +1,77 @@
+{% extends "BasePage.html" %} {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+{% raw %}
+<main id="app">
+	<div class="input-group">
+		<input v-model="query" class="form-control" list="datalist" placeholder="Suche ..." />
+		<div class="input-group-append">
+			<button @click="query = ''" class="btn btn-outline-secondary" type="button">X</button>
+		</div>
+		<datalist id="datalist">
+			<option v-for="el in datalistOptions" v-bind:value="el" />
+		</datalist>
+	</div>
+
+	<section v-for="category of categories" class="grid py-4">
+		<h3>{{ category }}</h3>
+		<hr />
+		<div class="row">
+			<div v-for="vid of vidsForCategory(category)" class="py-2 col-md-6 col-lg-4 col-xl-3 col-sm-12">
+				<div class="border rounded p-4 h-100 shadow-sm">
+					<h3 class="mb-4 font-weight-normal">{{ vid.name }}</h3>
+					<p class="card-text">Datum: {{ getHumanDate(vid.date) }}</p>
+					<p class="card-text">Größe: {{ getHumanSize(vid.size) }}</p>
+					<p class="card-text">Länge: {{ vid.duration }}</p>
+					<a v-bind:href="getVideoUrl(category, vid.file)">
+						<button class="btn btn-lg btn-primary" type="button">Öffnen</button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</main>
+{% endraw %}
+
+<script>
+	var app = new Vue({
+		el: "#app",
+		data: {
+			files: {{ files|tojson }},
+			selectedFiles: {{ files|tojson }},
+			query: ""
+		},
+		methods: {
+			getHumanSize(size) {
+				if (size < 1024*1024*1) return "<1 MB";
+				else return `${Math.floor(size / (1024 * 1024))} MB`;
+			},
+			getHumanDate(date) {
+				return date; // TODO
+			},
+			getVideoUrl(category, vid) {
+				return `/videos/${category}/${vid}`;
+			},
+			vidsForCategory(category) {
+				return this.selectedFiles
+					.filter(x => x.category == category)
+					.sort((x,y) => x.name.localeCompare(y.name, undefined, {numeric: true, sensitivity: 'base'}));
+			}
+		},
+		computed: {
+			datalistOptions() {
+				return [...new Set(this.files.flatMap(x => [x.name, x.category]))];
+			},
+			categories() {
+				return [...new Set(this.selectedFiles.map(x => x.category))].sort((x,y) => x.localeCompare(y));
+			}
+		},
+		watch: {
+			query: function (newVal, oldVal) {
+				const q = newVal.toLowerCase();
+				this.selectedFiles = this.files.filter(x => x.file.toLowerCase().includes(q) || x.category.toLowerCase().includes(q));
+			}
+		}
+	});
+</script>
+{% endblock content %}
