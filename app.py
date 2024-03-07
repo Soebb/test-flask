@@ -1,5 +1,6 @@
 import functools
 import os
+import secrets
 from datetime import datetime
 from flask import Flask, render_template, abort, redirect, flash, url_for, session
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ from wtforms.validators import DataRequired
 from flask_session import Session
 from datetime import timedelta
 from ffprobe import FFProbe
+from pathlib import Path
 import werkzeug.exceptions
 
 ######################
@@ -19,13 +21,22 @@ import werkzeug.exceptions
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+
+SECRET_FILE_PATH = Path(".flask_secret")
+try:
+    with SECRET_FILE_PATH.open("r") as secret_file:
+        app.secret_key = secret_file.read()
+except FileNotFoundError:
+    # Let's create a cryptographically secure code in that file
+    with SECRET_FILE_PATH.open("w") as secret_file:
+        app.secret_key = secrets.token_hex(32)
+        secret_file.write(app.secret_key)
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
 Session(app)
 
-VIDEO_PATH = os.getenv('VIDEO_PATH') or '../videos'
+VIDEO_PATH = os.getenv('VIDEO_PATH') or './videos'
 VIDEO_URL = os.getenv('VIDEO_URL') or '/videos'
 VIDEO_USERNAME = os.getenv('VIDEO_USERNAME')
 VIDEO_PASSWORD = os.getenv('VIDEO_PASSWORD')
