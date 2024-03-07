@@ -1,0 +1,5 @@
+Flask
+python-dotenv
+Flask-WTF
+Flask-Session
+ffprobe-python
