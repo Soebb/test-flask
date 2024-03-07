@@ -36,7 +36,10 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
 Session(app)
 
-VIDEO_PATH = os.getenv('VIDEO_PATH') or './videos'
+VIDEO_DIR = os.getenv('VIDEO_PATH') or './videos'
+absolute_path = os.path.dirname(__file__)
+relative_path = VIDEO_DIR
+VIDEO_PATH = os.path.join(absolute_path, relative_path)
 VIDEO_URL = os.getenv('VIDEO_URL') or '/videos'
 VIDEO_USERNAME = os.getenv('VIDEO_USERNAME')
 VIDEO_PASSWORD = os.getenv('VIDEO_PASSWORD')
