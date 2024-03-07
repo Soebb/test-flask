@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir gunicorn
 COPY . ./
 
 EXPOSE 5000
-CMD gunicorn --workers=3 -b :5000 --reload --log-level debug app:app
+CMD gunicorn --workers=3 -b :5000 --reload --access-logfile - --error-logfile - app:app
