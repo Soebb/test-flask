@@ -10,7 +10,5 @@ COPY . ./
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
 
-RUN python -m http.server 5000 --directory videos
-
 EXPOSE 5000
 CMD gunicorn --workers=3 -b 0.0.0.0:5000 --reload --access-logfile - --error-logfile - app:app
