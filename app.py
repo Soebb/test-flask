@@ -62,7 +62,6 @@ def upload_file():
     file.save("videos/test/test.mp4")
 
 @app.route("/videos")
-@login_required
 def videos():
     files = []
     for category in os.scandir(VIDEO_PATH):
@@ -98,7 +97,6 @@ def videos():
 
 
 @app.route('/videos/<string:category>/<string:vid>')
-@login_required
 def video(category, vid):
     p = os.path.join(VIDEO_PATH, category, vid)
 
