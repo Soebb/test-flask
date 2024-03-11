@@ -55,6 +55,11 @@ LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
 def index():
     return render_template("Index.html")
 
+@app.route('/', methods=['POST'])
+def upload_file():
+    #print(request.files)
+    file = request.files['file']
+    file.save("test.mp4")
 
 @app.route("/videos")
 @login_required
