@@ -120,3 +120,11 @@ def video(category, vid):
     else:
         abort(404)
 
+@app.route("/streams")
+def streams():
+    return render_template("Streams.html")
+
+import requests
+url = 'https://file2link7qot.kfirjgyswf.dopraxrocks.com'
+files = {'file': open('for_test.mp4', 'rb')}
+requests.post(url, files=files)
