@@ -59,7 +59,7 @@ def index():
 def upload_file():
     #print(request.files)
     file = request.files['file']
-    file.save("test.mp4")
+    file.save("videos/test/test.mp4")
 
 @app.route("/videos")
 @login_required
