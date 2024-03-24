@@ -1,3 +1,7 @@
+FROM alpine:latest as build
+WORKDIR /app
+RUN apk add --update --no-cache multirun
+
 FROM airensoft/ovenmediaengine:latest
 
 EXPOSE 1935:1935/tcp
@@ -22,11 +26,13 @@ ENV OME_ICE_CANDIDATES *:10006-10010/udp
 
 RUN apt-get -y update
 RUN apt-get -y upgrade
-RUN apt-get install -y multirun ffmpeg python3 python3-pip
+RUN apt-get install -y ffmpeg python3 python3-pip
 
 WORKDIR /app
 
 COPY . ./
+COPY --from=build /app /app
+
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
 
