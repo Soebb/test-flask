@@ -1,7 +1,3 @@
-FROM alpine:latest as build
-WORKDIR /tmp
-RUN apk add --update --no-cache multirun
-
 FROM airensoft/ovenmediaengine:latest
 
 EXPOSE 1935:1935/tcp
@@ -26,12 +22,12 @@ ENV OME_ICE_CANDIDATES *:10006-10010/udp
 
 RUN apt-get -y update
 RUN apt-get -y upgrade
-RUN apt-get install -y ffmpeg python3 python3-pip
+RUN apt-get install -y ffmpeg python3 python3-pip wget
+RUN wget -c https://github.com/nicolas-van/multirun/releases/download/1.1.3/multirun-x86_64-linux-gnu-1.1.3.tar.gz -O - | tar -xz && mv multirun /bin
 
 WORKDIR /app
 
 COPY . ./
-COPY --from=build /tmp ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
