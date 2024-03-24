@@ -1,5 +1,8 @@
 # syntax = devthefuture/dockerfile-x
 
+ARG DOCKER_BUILDKIT=1
+ARG COMPOSE_DOCKER_CLI_BUILD=1
+
 FROM python:3.10-slim-bullseye
 
 RUN apt-get -y update
