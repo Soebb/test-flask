@@ -1,4 +1,4 @@
-FROM airensoft/ovenmediaengine:latest
+FROM airensoft/ovenmediaengine:0.12.11
 
 EXPOSE 1935:1935/tcp
 EXPOSE 3333:3333/tcp
