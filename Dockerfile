@@ -1,5 +1,5 @@
 FROM alpine:latest as build
-WORKDIR /app
+WORKDIR /tmp
 RUN apk add --update --no-cache multirun
 
 FROM airensoft/ovenmediaengine:latest
@@ -31,7 +31,7 @@ RUN apt-get install -y ffmpeg python3 python3-pip
 WORKDIR /app
 
 COPY . ./
-COPY --from=build /app /app
+COPY --from=build /tmp ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir gunicorn
